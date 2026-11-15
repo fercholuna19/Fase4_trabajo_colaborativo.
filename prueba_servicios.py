@@ -2,6 +2,8 @@
 # Importamos las clases de servicios
 from servicios import ReservaSala, AlquilerEquipo, AsesoriaEspecializada
 
+from excepciones import ErrorServicio
+
 # Creamos una lista con diferentes servicios
 servicios = [
     ReservaSala("Sala de reuniones", 50000, 20),
@@ -18,3 +20,13 @@ for servicio in servicios:
 
     except (ValueError, TypeError) as error:
         print("Error al procesar el servicio:", error)
+
+
+# Probamos un servicio con datos incorrectos
+print("\n--- PRUEBA DE ERROR PERSONALIZADO ---")
+
+try:
+    servicio_error = ReservaSala("Sala de prueba", 50000, 0)
+
+except ErrorServicio as error:
+    print("Se detectó el error personalizado:", error)

@@ -2,6 +2,7 @@
 from clientes import Cliente
 from servicios import ReservaSala
 from reservas import Reserva
+from excepciones import ErrorReserva
 
 
 # Creamos un cliente
@@ -42,7 +43,7 @@ try:
     # Intentamos procesar sin confirmar
     reserva2.procesar()
 
-except ValueError as error:
+except ErrorReserva as error:
     print("Se detectó el error correctamente:", error)
 
 
@@ -53,7 +54,7 @@ try:
     print(reserva2.cancelar())
     print("Estado final:", reserva2.estado)
 
-except ValueError as error:
+except ErrorReserva as error:
     print("Error al cancelar:", error)
 
 # Intentamos confirmar una reserva cancelada
@@ -62,7 +63,7 @@ print("\n--- PRUEBA DE RESERVA CANCELADA ---")
 try:
     reserva2.confirmar()
 
-except ValueError as error:
+except ErrorReserva as error:
     print("No se permite confirmar:", error)
 
 
@@ -70,5 +71,7 @@ except ValueError as error:
 try:
     reserva2.procesar()
 
-except ValueError as error:
+except ErrorReserva as error:
     print("No se permite procesar:", error)
+
+    

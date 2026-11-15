@@ -1,6 +1,8 @@
 # Importamos las clases necesarias
 from clientes import Cliente
 from servicios import Servicio
+from excepciones import ErrorReserva
+from registro_errores import registrar_error
 
 
 # Clase que representa una reserva
@@ -10,7 +12,7 @@ class Reserva:
 
         # Validamos el identificador
         if not isinstance(identificador, str) or not identificador.strip():
-            raise ValueError("El identificador de la reserva no es válido")
+            raise ErrorReserva("El identificador de la reserva no es válido")
 
         # Validamos que el cliente sea un objeto Cliente
         if not isinstance(cliente, Cliente):
@@ -25,7 +27,7 @@ class Reserva:
             raise TypeError("La duración debe ser un valor numérico")
 
         if duracion <= 0:
-            raise ValueError("La duración debe ser mayor que cero")
+            raise ErrorReserva("La duración debe ser mayor que cero")
 
         # Guardamos los datos de la reserva
         self.__identificador = identificador.strip()
@@ -44,7 +46,9 @@ class Reserva:
     # Método para confirmar una reserva
     def confirmar(self):
         if self.__estado != "PENDIENTE":
-            raise ValueError("Solo se pueden confirmar reservas pendientes")
+            mensaje = "Solo se pueden confirmar reservas pendientes"
+            registrar_error(mensaje)
+            raise ErrorReserva(mensaje)
 
         self.__estado = "CONFIRMADA"
         return "Reserva confirmada correctamente"
@@ -52,7 +56,9 @@ class Reserva:
     # Método para cancelar una reserva
     def cancelar(self):
         if self.__estado != "PENDIENTE":
-            raise ValueError("Solo se pueden cancelar reservas pendientes")
+            mensaje = "Solo se pueden cancelar reservas pendientes"
+            registrar_error(mensaje)
+            raise ErrorReserva(mensaje)
 
         self.__estado = "CANCELADA"
         return "Reserva cancelada correctamente"
@@ -62,14 +68,17 @@ class Reserva:
 
         # Verificamos que la reserva esté confirmada
         if self.__estado != "CONFIRMADA":
-            raise ValueError("Solo se pueden procesar reservas confirmadas")
+            mensaje = "Solo se pueden procesar reservas confirmadas"
+            registrar_error(mensaje)
+            raise ErrorReserva(mensaje)
 
         try:
             # Calculamos el costo según el servicio seleccionado
             costo = self.__servicio.calcular_costo(self.__duracion)
 
         except (ValueError, TypeError) as error:
-            raise RuntimeError("No fue posible procesar la reserva") from error
+            registrar_error(f"Error al procesar la reserva: {error}")
+            raise ErrorReserva("No fue posible procesar la reserva") from error
 
         else:
             # Si no ocurre ningún error, actualizamos el estado

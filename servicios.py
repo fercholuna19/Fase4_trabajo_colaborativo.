@@ -2,6 +2,7 @@
 # Importamos las herramientas para crear clases abstractas
 from abc import ABC, abstractmethod
 
+from excepciones import ErrorServicio
 
 # Clase abstracta que representa los servicios generales
 class Servicio(ABC):
@@ -10,14 +11,14 @@ class Servicio(ABC):
 
         # Validamos el nombre del servicio
         if not isinstance(nombre, str) or not nombre.strip():
-            raise ValueError("El nombre del servicio no puede estar vacío")
+            raise ErrorServicio("El nombre del servicio no puede estar vacío")
 
         # Validamos la tarifa base
         if isinstance(tarifa_base, bool) or not isinstance(tarifa_base, (int, float)):
             raise TypeError("La tarifa debe ser un valor numérico")
 
         if tarifa_base <= 0:
-            raise ValueError("La tarifa debe ser mayor que cero")
+            raise ErrorServicio("La tarifa debe ser mayor que cero")
 
         # Guardamos los datos de forma encapsulada
         self._nombre = nombre.strip()
@@ -50,14 +51,14 @@ class ReservaSala(Servicio):
     def __init__(self, nombre, tarifa_base, capacidad_personas):
         super().__init__(nombre, tarifa_base)
 
-        if not isinstance(capacidad_personas, int) or capacidad_personas <= 0:
-            raise ValueError("La capacidad debe ser un número entero positivo")
+        if isinstance(capacidad_personas, bool) or not isinstance(capacidad_personas, int) or capacidad_personas <= 0:
+            raise ErrorServicio("La capacidad debe ser un número entero positivo")
 
         self.__capacidad_personas = capacidad_personas
 
     def validar_parametros(self, duracion):
         if isinstance(duracion, bool) or not isinstance(duracion, (int, float)) or duracion <= 0:
-            raise ValueError("La duración de la reserva debe ser positiva")
+            raise ErrorServicio("La duración de la reserva debe ser positiva")
 
         return True
 
@@ -76,13 +77,13 @@ class AlquilerEquipo(Servicio):
         super().__init__(nombre, tarifa_base)
 
         if not isinstance(tipo_equipo, str) or not tipo_equipo.strip():
-            raise ValueError("Debe indicar el tipo de equipo")
+            raise ErrorServicio("Debe indicar el tipo de equipo")
 
         self.__tipo_equipo = tipo_equipo.strip()
 
     def validar_parametros(self, duracion):
         if isinstance(duracion, bool) or not isinstance(duracion, (int, float)) or duracion <= 0:
-            raise ValueError("La duración del alquiler debe ser positiva")
+            raise ErrorServicio("La duración del alquiler debe ser positiva")
 
         return True
 
@@ -101,13 +102,13 @@ class AsesoriaEspecializada(Servicio):
         super().__init__(nombre, tarifa_base)
 
         if not isinstance(especialidad, str) or not especialidad.strip():
-            raise ValueError("Debe indicar la especialidad de la asesoría")
+            raise ErrorServicio("Debe indicar la especialidad de la asesoría")
 
         self.__especialidad = especialidad.strip()
 
     def validar_parametros(self, duracion):
         if isinstance(duracion, bool) or not isinstance(duracion, (int, float)) or duracion <= 0:
-            raise ValueError("La duración de la asesoría debe ser positiva")
+            raise ErrorServicio("La duración de la asesoría debe ser positiva")
 
         return True
 
