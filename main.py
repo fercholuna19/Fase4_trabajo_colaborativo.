@@ -33,7 +33,10 @@ def mostrar_menu():
     print("3. Mostrar servicios")
     print("4. Crear reserva")
     print("5. Mostrar reservas")
-    print("6. Salir")
+    print("6. Confirmar reserva")
+    print("7. Cancelar reserva")
+    print("8. Procesar reserva")
+    print("9. Salir")
     print("====================================")
 
 
@@ -94,9 +97,7 @@ def crear_reserva():
         )
         reservas.append(reserva)
 
-        print(reserva.confirmar())
-        costo = reserva.procesar()
-        print(f"Reserva procesada. Costo: ${costo:,.2f}")
+        print("Reserva creada correctamente. Estado: PENDIENTE")
 
     except (ValueError, TypeError, RuntimeError) as error:
         registrar_error(f"Error al crear reserva: {error}")
@@ -109,8 +110,64 @@ def mostrar_reservas():
         return
 
     for reserva in reservas:
+        print("\n====================================")
+        print(f"Reserva: {reserva.identificador}")
+        print(f"Cliente: {reserva.cliente.identificador}")
+        print(f"Servicio: {reserva.servicio.describir_servicio()}")
+        print(f"Duración: {reserva.duracion} horas")
         print(f"Estado: {reserva.estado}")
 
+        if reserva.estado == "PROCESADA":
+            costo = reserva.servicio.calcular_costo(reserva.duracion)
+            print(f"Costo: ${costo:,.2f}")
+
+        print("====================================")
+
+def seleccionar_reserva():
+    if not reservas:
+        print("No hay reservas registradas.")
+        return None
+
+    for indice, reserva in enumerate(reservas, start=1):
+        print(f"{indice}. Reserva - Estado: {reserva.estado}")
+
+    numero = int(input("Seleccione el número de reserva: "))
+
+    if numero < 1 or numero > len(reservas):
+        raise ValueError("El número de reserva no existe.")
+
+    return reservas[numero - 1]
+
+
+def confirmar_reserva():
+    try:
+        reserva = seleccionar_reserva()
+        if reserva is not None:
+            print(reserva.confirmar())
+    except (ValueError, TypeError) as error:
+        registrar_error(f"Error al confirmar reserva: {error}")
+        print(f"No se pudo confirmar: {error}")
+
+
+def cancelar_reserva():
+    try:
+        reserva = seleccionar_reserva()
+        if reserva is not None:
+            print(reserva.cancelar())
+    except (ValueError, TypeError) as error:
+        registrar_error(f"Error al cancelar reserva: {error}")
+        print(f"No se pudo cancelar: {error}")
+
+
+def procesar_reserva():
+    try:
+        reserva = seleccionar_reserva()
+        if reserva is not None:
+            costo = reserva.procesar()
+            print(f"Reserva procesada. Costo: ${costo:,.2f}")
+    except (ValueError, TypeError) as error:
+        registrar_error(f"Error al procesar reserva: {error}")
+        print(f"No se pudo procesar: {error}")
 
 def main():
     print("Bienvenido al Sistema Software FJ")
@@ -130,10 +187,17 @@ def main():
         elif opcion == "5":
             mostrar_reservas()
         elif opcion == "6":
+            confirmar_reserva()
+        elif opcion == "7":
+            cancelar_reserva()
+        elif opcion == "8":
+            procesar_reserva()
+        elif opcion == "9":
             print("Gracias por utilizar Software FJ.")
             break
         else:
             print("Opción incorrecta. Intente nuevamente.")
+
 
 
 if __name__ == "__main__":

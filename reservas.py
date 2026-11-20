@@ -38,7 +38,23 @@ class Reserva:
         # Toda reserva comienza pendiente
         self.__estado = "PENDIENTE"
 
-     # Método para consultar el estado de la reserva
+    # Método para consultar el estado de la reserva
+    @property
+    def identificador(self):
+        return self.__identificador
+
+    @property
+    def cliente(self):
+        return self.__cliente
+
+    @property
+    def servicio(self):
+        return self.__servicio
+
+    @property
+    def duracion(self):
+        return self.__duracion
+
     @property
     def estado(self):
         return self.__estado
